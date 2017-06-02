@@ -1,25 +1,38 @@
 ﻿<h1>@ViewBag.title</h1>
 
-<form action="/Search/Results" method="post">
+<form action="/Search/Index" method="post">
     <h2>Search by:</h2>
 
     <p>
         @foreach (KeyValuePair<string, string> column in ViewBag.columns)
         {
             <span>
-                <input type="radio"
-                       name="searchType"
-                       id="@column.Key"
-                       value="@column.Key"
-                       checked="@column.Key == 'all''" />
-                <label for="@column.Key">@column.Value</label>
+                @if ((String.IsNullOrEmpty(ViewBag.searchType) && (column.Key == "all")) || (ViewBag.searchType == column.Key))
+                {
+                    <input type="radio"
+                           name="searchType"
+                           id="@column.Key"
+                           value="@column.Key"
+                           checked="checked" />
+                    <label for="@column.Key">@column.Value</label>
+
+                }
+                else
+                {
+                    <input type="radio"
+                           name="searchType"
+                           id="@column.Key"
+                           value="@column.Key"
+                           />
+                    <label for="@column.Key">@column.Value</label>
+                }
             </span>
         }
     </p>
 
     <p>
-        <label for="searchTerm">Keyword:</label>
-        <input type="text" name="searchTerm" id="searchTerm" />
+        <label for="searchTerm">Keyword:</label> 
+        <input type="text" name="searchTerm" id="searchTerm" /> <span>@ViewBag.error</span>
     </p>
 
     <input type="submit" value="Search" />
@@ -30,7 +43,7 @@
 @if (ViewBag.jobs != null)
 {
 
-    <h3>@ViewBag.jobs.Count Result(s) for <text>"</text>@ViewBag.searchTerm<text>"</text> in <text>"</text>@ViewBag.searchType<text>"</text></h3>
+    <h3>@ViewBag.jobs.Count Result(s) for <text>"</text>@ViewBag.searchTerm<text>"</text> in <text>"</text>@ViewBag.columns[ViewBag.searchType]<text>"</text></h3>
 
     <table>
         @for (int i = 0; i < ViewBag.jobs.Count; i++)
@@ -39,7 +52,14 @@
                 <td>
                     @foreach (KeyValuePair<string, string> detail in ViewBag.jobs[i])
                     {
-                        <b> @detail.Key </b><text> : </text>@detail.Value <br />
+                        @if (detail.Key == "name")
+                        {
+                            <b> Title </b><text> : </text>@detail.Value <br />
+                        }
+                        else
+                        {
+                            <b> @ViewBag.columns[detail.Key] </b><text> : </text>@detail.Value <br />
+                        }
 
                     }
                 </td> 

@@ -13,7 +13,14 @@
             <td>
                 @foreach (KeyValuePair<string, string> detail in ViewBag.jobs[i])
                 {
-                    <b> @detail.Key </b><text> : </text>@detail.Value <br />
+                    @if (detail.Key == "name")
+                    {
+                        <b> Title </b><text> : </text>@detail.Value <br />
+                    }
+                    else
+                    {
+                        <b> @ViewBag.columns[detail.Key] </b><text> : </text>@detail.Value <br />
+                    }
 
                 }
             </td>
